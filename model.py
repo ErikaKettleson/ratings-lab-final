@@ -11,7 +11,7 @@ db = SQLAlchemy()
 
 ##############################################################################
 # Model definitions
-
+# reference user_id and movie_id in other columns? 
 class User(db.Model):
     """User of ratings website."""
 
@@ -23,9 +23,37 @@ class User(db.Model):
     age = db.Column(db.Integer, nullable=True)
     zipcode = db.Column(db.String(15), nullable=True)
 
+    ratings = db.relationship('Rating')
 
-# Put your Movie and Rating model classes here.
+    def __repr__(self):
+        """ representation when printed user id & email"""
+        return "<User user_id=%s email=%s>" % (self.user_id, self.email)
 
+
+class Rating(db.Model):
+    """just ratings ."""
+
+    __tablename__ = "rating"
+
+    rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movie.movie_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    score = db.Column(db.Integer, nullable=False)
+
+    movie = db.relationship('Movie')
+    user = db.relationship('User')
+
+class Movie(db.Model):
+    """just movies ."""
+
+    __tablename__ = "movie"
+
+    movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    released_at = db.Column(db.DateTime, nullable=False)
+    title = db.Column(db.String(64), nullable=False)
+    imdb_url = db.Column(db.String(256), nullable=False)
+
+    ratings = db.relationship('Rating')
 
 ##############################################################################
 # Helper functions
@@ -36,6 +64,7 @@ def connect_to_db(app):
     # Configure to use our PstgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///ratings'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
     db.init_app(app)
 
