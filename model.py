@@ -11,7 +11,7 @@ db = SQLAlchemy()
 
 ##############################################################################
 # Model definitions
-# reference user_id and movie_id in other columns? 
+# reference user_id and movie_id in other columns?
 class User(db.Model):
     """User of ratings website."""
 
@@ -27,26 +27,30 @@ class User(db.Model):
 
     def __repr__(self):
         """ representation when printed user id & email"""
-        return "<User user_id=%s email=%s>" % (self.user_id, self.email)
+        return "<User user_id=%s email=%s zipcode=%s>" % (self.user_id, self.email, self.zipcode)
 
 
 class Rating(db.Model):
     """just ratings ."""
 
-    __tablename__ = "rating"
+    __tablename__ = "ratings"
 
     rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    movie_id = db.Column(db.Integer, db.ForeignKey('movie.movie_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.movie_id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
-    
+
     movie = db.relationship('Movie')
     user = db.relationship('User')
+
+    def __repr__(self):
+        return "<Rating rating_id=%s user_id=%s movie_id=%s score=%s>" % (self.rating_id, self.user_id, self.movie_id, self.score)
+
 
 class Movie(db.Model):
     """just movies ."""
 
-    __tablename__ = "movie"
+    __tablename__ = "movies"
 
     movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     released_at = db.Column(db.DateTime, nullable=True)
@@ -55,8 +59,13 @@ class Movie(db.Model):
 
     ratings = db.relationship('Rating')
 
+    def __repr__(self):
+        """ representation when printed user id & email"""
+        return "<Movie movie_id=%s title=%s released_at=%s>" % (self.movie_id, self.title, self.released_at)
+
 ##############################################################################
 # Helper functions
+
 
 def connect_to_db(app):
     """Connect the database to our Flask app."""
@@ -64,7 +73,7 @@ def connect_to_db(app):
     # Configure to use our PstgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///ratings'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_ECHO'] = True
+    # app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
     db.init_app(app)
 
