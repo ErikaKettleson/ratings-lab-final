@@ -18,8 +18,8 @@ class User(db.Model):
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    email = db.Column(db.String(64), nullable=True)
-    password = db.Column(db.String(64), nullable=True)
+    email = db.Column(db.String(264), nullable=True)
+    password = db.Column(db.String(264), nullable=True)
     age = db.Column(db.Integer, nullable=True)
     zipcode = db.Column(db.String(15), nullable=True)
 
@@ -36,10 +36,10 @@ class Rating(db.Model):
     __tablename__ = "rating"
 
     rating_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    movie_id = db.Column(db.Integer, db.ForeignKey('movie.movie_id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    movie_id = db.Column(db.Integer, db.ForeignKey('movie.movie_id'))
     score = db.Column(db.Integer, nullable=False)
-
+    
     movie = db.relationship('Movie')
     user = db.relationship('User')
 
@@ -49,9 +49,9 @@ class Movie(db.Model):
     __tablename__ = "movie"
 
     movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    released_at = db.Column(db.DateTime, nullable=False)
-    title = db.Column(db.String(64), nullable=False)
-    imdb_url = db.Column(db.String(256), nullable=False)
+    released_at = db.Column(db.DateTime, nullable=True)
+    title = db.Column(db.String(264), nullable=False)
+    imdb_url = db.Column(db.String(256), nullable=True)
 
     ratings = db.relationship('Rating')
 
