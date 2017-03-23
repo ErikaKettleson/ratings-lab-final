@@ -2,10 +2,10 @@
 
 from jinja2 import StrictUndefined
 
-from flask import Flask, jsonify
+from flask import (Flask, jsonify, render_template, redirect, request, flash, session)
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db
+from model import (connect_to_db, db, User, Rating, Movie)
 
 
 app = Flask(__name__)
@@ -22,8 +22,35 @@ app.jinja_env.undefined = StrictUndefined
 @app.route('/')
 def index():
     """Homepage."""
-    a = jsonify([1,3])
-    return a
+    return render_template("homepage.html")
+
+@app.route('/users')
+def user_list():
+    """ show list of users."""
+
+    users = User.query.all()
+    return render_template("user_list.html", users=users)
+
+@app.route('/register_form')
+def show_form():
+    """ show form."""
+
+    return render_template("register_form.html")
+
+
+@app.route('/form_success', methods=["POST"])
+def form_success():
+    """ reroute home with email/pass."""
+
+
+    # 1. for thurs: want to pull info from register_form and set up jinja
+    # 3. add to db once validated
+
+    print "FORM SUCCESS"
+    return render_template("homepage.html")
+
+
+
 
 
 if __name__ == "__main__":
