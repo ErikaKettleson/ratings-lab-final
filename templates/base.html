@@ -6,6 +6,30 @@
     Ratings
     <hr>    
     
-    {% block content %} put ur content here {% endblock %}
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <p>Register HERE</p>
+        <p><a href="/register_form">registered?</a></p>
+
+    {% if session.get('logged_in_user_email') %}
+    <li><a href="/logout_form">Log Out</a></li>
+    {% else %}
+    <li><a href="/login_form">Log In</a></li>
+    {% endif %}
+
+<!--     <p>Login HERE</p>
+        <p><a href="/login_form">log in?</a></p> -->
+
+    <!-- add logout/login info -->
+
+     {% block content %} {% endblock %}
 </body>
 </html>
